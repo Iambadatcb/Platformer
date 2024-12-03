@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckRadius = 0.2f;
-
+    
     private bool isGrounded;
     private Rigidbody2D rb;
     private float inputX;
