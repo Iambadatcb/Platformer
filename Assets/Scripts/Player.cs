@@ -15,7 +15,11 @@ public class Player : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckRadius = 0.2f;
+
+    [Header("Jump Mechanics")]
+    public float coyoteTime = 0.3f;
     
+    private float coyoteTimeCounter;
     private bool isGrounded;
     private Rigidbody2D rb;
     private float inputX;
@@ -31,11 +35,25 @@ public class Player : MonoBehaviour
         inputX = Input.GetAxisRaw("Horizontal");
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position,groundCheckRadius,groundLayer);
-        if(isGrounded && Input.GetButtonDown("Jump"))
+
+        if(isGrounded){
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter-= Time.deltaTime;
+        }
+
+        if(coyoteTimeCounter>0 && Input.GetButtonDown("Jump"))
         {
             var jumpVelocity = MathF.Sqrt(jumpHeight * -2f * Physics.gravity.y * rb.gravityScale);
             rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jumpVelocity);
         }
+        if(coyoteTimeCounter<0 && Input.GetButtonDown("Jump") && !isGrounded){
+            var jumpVelo = MathF.Sqrt(jumpHeight * -2f * Physics.gravity.y * rb.gravityScale);
+            rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jumpVelo);
+        }
+        
     }
 
     private void FixedUpdate()
